@@ -22,13 +22,20 @@ class RandomColor extends Random {
   types = ['hex', 'rgb']
 
   color() {
-    return`rgb(${super.integerBetween(0,255)},${super.integerBetween(0,255)},${super.integerBetween(0,255)})`
+    let r = super.integerBetween(0,255)
+    let g = super.integerBetween(0,255)
+    let b = super.integerBetween(0,255)
+    if (this.type === 'hex') {
+      return `#${r.toString(16)}${g.toString(16)}${b.toString(16)}`
+    } else {
+      return `rgb(${r}, ${g}, ${b})`
+    }
   }
 }
 
 
 
-export const random = new RandomColor()
+export const random = new RandomColor('hex')
 
 
 
