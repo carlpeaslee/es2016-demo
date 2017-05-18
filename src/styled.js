@@ -14,6 +14,7 @@ export const Column = styled.div`
 export const Row = styled.div`
   display: flex;
   flex-direction: row;
+  margin: 10px;
 `
 
 export const RuleInput = styled.input`
