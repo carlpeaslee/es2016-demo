@@ -68,7 +68,7 @@ export async function getRandomPoem() {
     let result = await fetch(shakespeareApi, options())
     let response = await result.json()
     let poem = response.data.allPoems[0]
-    return poem.text.replace(/(<br[/]>)/g, '\n')
+    return poem.text
   } catch (e) {
     console.log("Error in getRandomPoem", e )
     throw e

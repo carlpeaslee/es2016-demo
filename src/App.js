@@ -4,8 +4,9 @@ import {Markup, Editor, Container, Column, Row, RuleInput, RuleLabel, StyleInput
 import {getRandomPoem, random} from './utils'
 
 
+export default class PlotCool extends Component {
 
-export default class Hl extends Component {
+  static displayName = "PlotCool"
 
   state = {
     editor: '',
@@ -21,23 +22,21 @@ export default class Hl extends Component {
   }
 
 
-
-  convertToMarkup = (value) => {
-    let div = document.createElement("div")
-    let text = document.createTextNode(value)
-    div.appendChild(text)
-    let {value: __html} = hljs.highlightAuto(div.innerHTML)
+  convertToMarkup = (text) => {
     return {
-      __html
+      __html: hljs.highlightAuto(text).value
     }
   }
 
   tab = (e) => {
     if (e.keyCode === 9) {
+      let {value, selectionStart, selectionEnd} = e.target
       e.preventDefault()
-      let firstPart = e.target.value.substring(0, e.target.selectionStart).concat('\t')
-      let secondPart = e.target.value.substring(e.target.selectionEnd)
-      e.target.value = firstPart.concat(secondPart)
+      e.target.value = value.substring(0, selectionStart)
+                            .concat('\t')
+                            .concat(value.substring(selectionEnd))
+
+      e.target.selectionStart = e.target.selectionEnd = selectionStart + 1
       this.handleChange(e)
     }
   }
@@ -45,9 +44,13 @@ export default class Hl extends Component {
 
   handleChange = (event) => {
     let {name, value} = event.target
-    this.setState({
-      [name]: value
-    })
+    this.setState(
+      (prevState) => {
+        return {
+          [name]: value
+        }
+      }
+    )
   }
 
   language = (newRules) => {
@@ -140,7 +143,6 @@ export default class Hl extends Component {
     hljs.registerLanguage('language' , this.language(ruleObjects))
     hljs.configure({
       languages: ['language'],
-      useBr: true
     })
   }
 
@@ -210,6 +212,7 @@ export default class Hl extends Component {
               value={editor}
               onChange={handleChange}
               onKeyDown={tab}
+              ref={"editor"}
             />
             <Markup
               dangerouslySetInnerHTML={convertToMarkup(editor)}
